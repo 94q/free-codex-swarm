@@ -1,6 +1,6 @@
 # Publish free-codex-swarm
 
-The application is prepared locally; no GitHub repository has been created or pushed by this task.
+The repository is published at https://github.com/94q/free-codex-swarm. This guide describes source updates; Windows executables belong in GitHub Releases, not the Git tree. See [BUILDING.md](BUILDING.md) for the tag-triggered release process.
 
 ## Before publishing
 

@@ -4,8 +4,8 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "codex-swarm"
-version = "0.1.0"
-description = "ChatGPT-authenticated Codex collaboration in a Windows terminal"
+version = "0.2.0"
+description = "ChatGPT-authenticated Codex collaboration in a cross-platform terminal"
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE", "THIRD_PARTY_NOTICES.md"]

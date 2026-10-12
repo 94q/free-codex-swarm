@@ -9,6 +9,15 @@ from codex_swarm.persistence.database import Database
 from codex_swarm.persistence.lock import InstanceLock
 
 
+async def self_test(config: Config, db: Database) -> None:
+    """Exercise the bundled TUI offline, without invoking Codex or reading credentials."""
+    from codex_swarm.tui.app import SwarmApp
+
+    async with SwarmApp(config, db).run_test(size=(120, 44)) as pilot:
+        await pilot.pause()
+    print("Codex-Swarm offline self-test passed.")
+
+
 async def doctor(config: Config) -> None:
     from codex_swarm.integrations.codex_cli import CodexCLI
 
@@ -53,10 +62,19 @@ def main() -> None:
     parser.add_argument(
         "--no-resize", action="store_true", help="Leave terminal window size unchanged"
     )
+    parser.add_argument("--self-test", action="store_true", help="Offline TUI and state initialization check; no Codex calls")
     args = parser.parse_args()
-    config = Config(args.home)
     try:
+        config = Config(args.home)
         with InstanceLock(config.root):
+            if not config.path.exists():
+                config.save()
+            if getattr(sys, "frozen", False):
+                import shutil
+
+                bundled = Path(sys._MEIPASS) / "licenses"
+                if bundled.is_dir():
+                    shutil.copytree(bundled, config.root / "licenses", dirs_exist_ok=True)
             reset_request = config.root / "reset-settings.request"
             if args.reset_settings or reset_request.exists():
                 config.reset()
@@ -66,6 +84,9 @@ def main() -> None:
                 return
             db = Database(config.root)
             try:
+                if args.self_test:
+                    asyncio.run(self_test(config, db))
+                    return
                 if args.project or args.resume:
                     from codex_swarm.core.orchestrator import Orchestrator
 

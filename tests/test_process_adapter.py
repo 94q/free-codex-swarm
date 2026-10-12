@@ -24,8 +24,10 @@ print(json.dumps({"type":"item.completed","item":{"type":"agent_message","text":
 print(json.dumps({"type":"turn.completed","usage":{"input_tokens":3,"output_tokens":2}}),flush=True)
 """)
     original = asyncio.create_subprocess_exec
+    captured = []
 
     async def spawn(*args, **kwargs):
+        captured.append(args)
         if args[0] == sys.executable:
             agent = Path(args[args.index("--output-schema") + 1]).stem.split(".")[0]
             return await original(sys.executable, str(script), agent, **kwargs)
@@ -33,6 +35,7 @@ print(json.dumps({"type":"turn.completed","usage":{"input_tokens":3,"output_toke
 
     monkeypatch.setattr(asyncio, "create_subprocess_exec", spawn)
     cli = CodexCLI(sys.executable)
+    cli.test_captured_args = captured
 
     async def auth(home=""):
         return "ChatGPT"
@@ -57,6 +60,8 @@ async def test_real_child_json_stream(adapter, tmp_path):
     assert r.thread_id == "test-thread"
     assert [e["type"] for e in events][-1] == "process.exited"
     assert not adapter.processes
+    command = adapter.test_captured_args[0]
+    assert any('windows.sandbox=' in str(arg) for arg in command) == (os.name == "nt")
 
 
 async def test_timeout_reaps_process(adapter, tmp_path):

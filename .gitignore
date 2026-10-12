@@ -32,3 +32,8 @@ verification/
 Thumbs.db
 .vscode/
 .idea/
+
+# Portable executable state and release build environment
+codex-swarm-data/
+.build-venv/
+*.spec

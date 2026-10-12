@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.0
+
+- Compressed portable Windows x64 EXE with adjacent settings/history/license notices.
+- Offline frozen TUI self-test and tag-triggered GitHub Releases builds/checksums.
+- Linux/macOS source installers, launchers, state paths, and cross-platform CI.
+- Windows sandbox configuration restricted to Windows subprocesses.
+- Release-first Windows quick start and separate platform source setup guides.
+
 ## 0.1.0
 
 - Official ChatGPT-authenticated Codex CLI orchestration with isolated Git worktrees.

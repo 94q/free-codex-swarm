@@ -87,7 +87,7 @@ Menu numbers work either as shortcuts in focused menus or as commands. Arrow key
 
 For a fresh set of preferences, enter `reset_settings` and confirm with `RESET`, or launch with `--reset-settings`. The old settings are backed up as `settings.before-reset-*.json`. All preferences, engine/session configuration, saved project selections, custom themes, and command history return to defaults. Official Codex authentication and historical task/worktree data are not deleted. A queued `reset-settings.request` applies on the next launch while holding the instance lock.
 
-Default state directory: `%LOCALAPPDATA%\CodexSwarm`. Use `--home <path>` or `CODEX_SWARM_HOME` to choose another **Codex-Swarm state** directory (this is separate from credential `CODEX_HOME`).
+Default state: EXE uses `codex-swarm-data` beside itself; Windows source uses `%LOCALAPPDATA%\CodexSwarm`; Linux uses `$XDG_DATA_HOME/CodexSwarm` or `~/.local/share/CodexSwarm`; macOS uses `~/Library/Application Support/CodexSwarm`. Use `--home <path>` or `CODEX_SWARM_HOME` to choose another **Codex-Swarm state** directory (this is separate from credential `CODEX_HOME`).
 
 Upgrading from the previous name preserves your settings and task history: an existing `%LOCALAPPDATA%\CodexNexus` directory is reused without moving it. The legacy `NEXUS_HOME` variable is also accepted; `CODEX_SWARM_HOME` takes precedence. Existing integration branches remain valid. Historical live-test records retain their original names and paths as evidence, not current branding.
 
@@ -103,7 +103,7 @@ Worktrees are intentionally **not automatically deleted**. They preserve failed 
 
 ## Fresh installation / development
 
-Requires Windows, Python 3.11+, Git, an official Codex CLI compatible with your account/model catalog, and working official sandbox setup.
+Requires Windows/Linux/macOS, Python 3.11+ for source (not needed for the Windows EXE), Git, an official Codex CLI compatible with your account/model catalog, and working official sandbox setup.
 
 ```powershell
 py -3 -m venv .venv

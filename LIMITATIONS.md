@@ -1,6 +1,6 @@
 # Release limitations and trust boundaries
 
-This is a working, tested 0.1.0 implementation; it is **not a fully audited production-security product** and does not meet every aspirational requirement without qualification.
+This is a working, tested 0.2.0 implementation; it is **not a fully audited production-security product** and does not meet every aspirational requirement without qualification.
 
 ## Verified environmental blockers
 
@@ -44,6 +44,6 @@ This is a working, tested 0.1.0 implementation; it is **not a fully audited prod
 - Gradient borders apply to Rich boxed preview content. Textual's native scrollable widget borders use the selected solid border color.
 - Live status comes from process/item events. It does not infer unobservable internal model progress. No fabricated percentage is displayed.
 - Direct Roblox Studio interaction and production Roblox validation were not performed. Rojo/Luau tools can be used when present; sandbox/network limitations may require user action.
-- Windows execution was tested on this host, including a real terminal launch and headless layouts at 120×45, 80×24 and 42×18. Other Windows versions/fonts/terminals are not certified. macOS/Linux behavior is not verified.
-- Delivery includes Python source, launch script and installable wheel, not a signed standalone Windows EXE/MSI. Worktrees/logs have no automatic retention pruning.
+- Windows execution was tested on this host, including a real terminal launch and headless layouts at 120×45, 80×24 and 42×18. Other Windows versions/fonts/terminals are not certified. Linux/macOS source support and automated CI are included; real agent inference and native terminal presentation on those hosts have not been live-tested by the maintainer.
+- Delivery includes Python source, platform launch scripts, an installable wheel, and a compressed standalone Windows x64 EXE. The EXE is unsigned and still requires external Git/Codex for agent tasks. Worktrees/logs have no automatic retention pruning. POSIX cancellation reaps process groups; Windows kill-on-close Job Objects have no equivalent crash-containment implementation here.
 - The acceptance fixture is deliberately small. Passing it does not prove robustness on very large repositories, prolonged runs, complex merges or every third-party build system.

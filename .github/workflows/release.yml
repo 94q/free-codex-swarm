@@ -1,0 +1,61 @@
+name: Windows executable release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  build-and-release:
+    runs-on: windows-latest
+    timeout-minutes: 25
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.13'
+      - name: Install build and test dependencies
+        shell: pwsh
+        run: |
+          python -m pip install -r requirements-build.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Build dependencies failed' }
+          python -m pip install -r requirements-dev.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Test dependencies failed' }
+      - name: Lint and test before packaging
+        shell: pwsh
+        run: |
+          python -m ruff check codex_swarm scripts tests --select F
+          if ($LASTEXITCODE -ne 0) { throw 'Lint failed' }
+          python -m pytest -q
+          if ($LASTEXITCODE -ne 0) { throw 'Tests failed' }
+      - name: Build compressed single-file EXE
+        run: python scripts/build_exe.py
+      - name: Test executable without Python or Codex on PATH
+        shell: pwsh
+        run: |
+          $originalPath = $env:PATH
+          $env:PATH = "$env:SystemRoot\System32;$env:SystemRoot"
+          try {
+            & .\dist\Codex-Swarm.exe --help
+            if ($LASTEXITCODE -ne 0) { throw 'EXE help failed' }
+            & .\dist\Codex-Swarm.exe --self-test
+            if ($LASTEXITCODE -ne 0) { throw 'EXE self-test failed' }
+            if (!(Test-Path dist/codex-swarm-data/settings.json)) { throw 'Portable settings missing' }
+            if (!(Test-Path dist/codex-swarm-data/history.sqlite3)) { throw 'Portable database missing' }
+          } finally { $env:PATH = $originalPath }
+      - name: Publish release assets
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          gh release create "$env:RELEASE_TAG" --verify-tag --draft --title "Codex-Swarm $env:RELEASE_TAG" --notes-file docs/RELEASE_NOTES.md
+          if ($LASTEXITCODE -ne 0) { throw 'Release creation failed' }
+          gh release upload "$env:RELEASE_TAG" dist/Codex-Swarm.exe dist/SHA256SUMS.txt
+          if ($LASTEXITCODE -ne 0) { throw 'Asset upload failed' }
+          gh release edit "$env:RELEASE_TAG" --draft=false --latest
+          if ($LASTEXITCODE -ne 0) { throw 'Release publication failed' }

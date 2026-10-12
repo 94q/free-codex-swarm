@@ -8,7 +8,7 @@ A terminal command center for parallel Codex development with ChatGPT sign-in,
 isolated Git worktrees, and a review-first workflow.
 
 ![python](https://img.shields.io/badge/python-3.11%2B-blue)
-![platform](https://img.shields.io/badge/platform-windows-blue)
+![platform](https://img.shields.io/badge/platform-windows%20%7C%20linux%20%7C%20macOS-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
 </div>
@@ -38,8 +38,8 @@ objective -> coordinator plan -> parallel workers -> integration -> review -> yo
 
 | Requirement | Details |
 | --- | --- |
-| Windows | Windows 10/11 is the target platform; Windows is locally tested. |
-| Python | Python 3.11 or newer, with pip and venv. Python 3.13 was used for local verification. |
+| Operating system | Windows 10/11 x64 for the EXE; Windows, Linux, or macOS for source setup. |
+| Python | Not needed for the EXE. Source setup needs Python 3.11+, pip, and venv. |
 | Git | Installed and available on PATH. Projects need an initial commit and a clean working tree. |
 | Codex CLI | A recent official native CLI supporting `exec`, `app-server`, and the flags used by this release. |
 | ChatGPT sign-in | An account with working Codex access. No particular free/trial entitlement is promised. |
@@ -52,9 +52,47 @@ objective -> coordinator plan -> parallel workers -> integration -> review -> yo
 
 The Python installer should include the launcher or add Python to PATH. Reopen your
 terminal after installing prerequisites. Administrator access is not required by the
-app's installer. macOS/Linux execution is not verified; see [LIMITATIONS.md](LIMITATIONS.md).
+app's installer. Linux/macOS source paths are supported and covered by CI; live agent
+runs on those platforms have not been verified by the maintainer. See [LIMITATIONS.md](LIMITATIONS.md).
 
-## Quick start on Windows
+## Quick start from Windows
+
+**[Download Codex-Swarm.exe](https://github.com/94q/free-codex-swarm/releases/latest/download/Codex-Swarm.exe)**
+· [All releases and checksums](https://github.com/94q/free-codex-swarm/releases/latest)
+
+1. Download the **single EXE** and put it in a writable folder (Downloads is fine).
+   No ZIP extraction, Python installation, pip, or app installer is needed.
+2. If not already installed, install **Git** and the **official Codex CLI** using the
+   links in Requirements. Then run `codex login` and choose ChatGPT sign-in.
+3. Double-click **Codex-Swarm.exe**. Select your clean Git project and start a task.
+
+The EXE bundles Python and the app's Python dependencies, **not Git, Codex, or
+project build tools**. Internet/account access is still required for agent tasks.
+Only Windows 10/11 **x64** is provided as a binary; other architectures use source setup.
+
+On first launch it automatically creates **`codex-swarm-data` beside the EXE**, containing
+`settings.json`, `history.sqlite3`, an instance lock, license notices, and task files
+as needed. Keep the EXE and that folder together when moving/upgrading. Treat this
+folder as private: it can contain project paths, prompts, logs, and reports. Official
+Codex credentials stay in the CLI's own credential home. Use `--home` or
+`CODEX_SWARM_HOME` if you want state elsewhere. Do not launch it from a read-only folder.
+
+The executable is a compressed one-file bundle; it briefly extracts its runtime
+into the system temporary directory at startup, not into your download folder.
+It is **unsigned**: Windows may show a publisher/reputation warning. Review the
+release checksum/source and do not disable antivirus or run as administrator.
+
+Optional checks from PowerShell in the EXE folder:
+
+```powershell
+.\Codex-Swarm.exe --self-test   # offline TUI/state test, no Codex calls
+.\Codex-Swarm.exe --doctor      # installed CLI/auth/model check, no inference
+Get-FileHash .\Codex-Swarm.exe -Algorithm SHA256
+```
+
+Compare the hash with `SHA256SUMS.txt` from the same release.
+
+## Setup for Windows
 
 ### 1. Download the repository
 
@@ -130,6 +168,53 @@ release was live-tested with CLI `0.162.0-alpha.2`; older CLI versions can rejec
 new model catalogs or required flags. If discovery is wrong, set `codex_binary`
 to your native `codex.exe` in **Agent Configuration**.
 
+## Setup for Linux
+
+Install **Python 3.11+**, Git, and the official Codex CLI. On Debian/Ubuntu, ensure
+Python's `venv` module is installed (for example, `sudo apt install python3-venv git`);
+the app installer itself does not need root. Check `python3 --version` first: an
+older distribution may need a newer Python version installed separately.
+
+```sh
+git clone https://github.com/94q/free-codex-swarm.git
+cd free-codex-swarm
+sh install_requirements.sh
+codex login
+codex login status
+sh run.sh --doctor
+sh run.sh
+```
+
+Use ChatGPT sign-in in the official CLI browser/device flow. On a remote/headless
+machine follow the CLI's documented authentication options. Set `PYTHON=python3.13`
+before running the installer if your default `python3` is too old. The script
+creates `.venv` locally; no system-wide Python package installation is needed.
+
+## Setup for macOS
+
+Install **Python 3.11+** with pip/venv, Git, and the official Codex CLI. Both Intel
+and Apple Silicon use this source setup (there is no macOS binary release).
+Use the [Python macOS installer](https://www.python.org/downloads/macos/) or your
+usual package manager. Git can come from Apple's Command Line Tools (`xcode-select --install`)
+or your existing Git installation. The commands below run in Terminal:
+
+```sh
+git clone https://github.com/94q/free-codex-swarm.git
+cd free-codex-swarm
+sh install_requirements.sh
+codex login
+codex login status
+sh run.sh --doctor
+sh run.sh
+```
+
+For both POSIX platforms, launch from an interactive UTF-8 terminal. Terminal
+window resizing is left to the host; enlarge it manually if needed. Native Codex
+sandboxing remains enabled; Windows-only sandbox settings are not passed on POSIX.
+The source test suite runs on Windows, Linux, and macOS in GitHub Actions; real
+agent inference and graphical terminal presentation on Linux/macOS have not been
+live-tested by the maintainer.
+
 ## Run your first task
 
 1. Select **Projects** and add a Git repository that has at least one commit.
@@ -150,7 +235,7 @@ Fix the failing arithmetic tests. Keep public function signatures unchanged,
 limit changes to the arithmetic modules, and run the existing tests.
 ```
 
-Windows sandbox defaults to `elevated`. If official sandbox setup fails, fix it
+On Windows, sandbox defaults to `elevated`. If official sandbox setup fails, fix it
 using the CLI's guidance. A supported `unelevated` fallback can be selected
 explicitly in Agent Configuration, but has weaker isolation. There is no silent
 fallback or automatic elevation. [Windows sandbox guide](https://learn.chatgpt.com/docs/windows/windows-sandbox).
@@ -219,9 +304,14 @@ remains scrollable if it cannot fit; `--no-resize` leaves the window unchanged.
 | Another instance owns state | Close the existing app; a stale lock filename alone does not mean the lock is held. |
 | Artwork is partly hidden | Enlarge your terminal or scroll the artwork panel. |
 
-State is outside the repository: `%LOCALAPPDATA%\CodexSwarm` by default. `--home`
-and `CODEX_SWARM_HOME` select another location. A previous `%LOCALAPPDATA%\CodexNexus`
-installation is reused for compatibility. A reset backs up preferences and leaves
+State defaults:
+
+- **Windows EXE:** `codex-swarm-data` beside the executable.
+- **Windows source:** `%LOCALAPPDATA%\CodexSwarm` (legacy `CodexNexus` is reused).
+- **Linux source:** `$XDG_DATA_HOME/CodexSwarm`, or `~/.local/share/CodexSwarm`.
+- **macOS source:** `~/Library/Application Support/CodexSwarm`.
+
+`--home` and `CODEX_SWARM_HOME` override these defaults. A reset backs up preferences and leaves
 Codex authentication, task records, and preserved worktrees alone.
 
 ## Development
@@ -233,11 +323,11 @@ Codex authentication, task records, and preserved worktrees alone.
 ```
 
 Normal tests use mocked provider calls and temporary local Git/process fixtures;
-they do not sign in or consume Codex allowance. GitHub Actions runs the Windows
-suite on Python 3.11 and 3.13. The live acceptance scripts are explicit opt-in and
+they do not sign in or consume Codex allowance. GitHub Actions runs the Windows,
+Linux, and macOS suite on Python 3.11 and 3.13. The live acceptance scripts are explicit opt-in and
 consume your existing allowance; do not run them casually or in public CI.
 
-[Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) ·
+[Building the EXE](docs/BUILDING.md) · [Contributing](CONTRIBUTING.md) · [Security](SECURITY.md) ·
 [Verification](VERIFICATION.md) · [Limitations](LIMITATIONS.md) ·
 [Detailed usage](docs/USAGE.md)
 

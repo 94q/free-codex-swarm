@@ -7,6 +7,7 @@ import os
 from pathlib import Path
 import re
 import secrets
+import sys
 from datetime import datetime, timezone
 from codex_swarm.core.security import safe_text
 
@@ -196,7 +197,14 @@ def data_dir() -> Path:
     for name in ("CODEX_SWARM_HOME", "NEXUS_HOME"):
         if os.environ.get(name):
             return Path(os.environ[name]).expanduser().resolve()
-    base = Path(os.environ.get("LOCALAPPDATA", str(Path.home() / ".local/share")))
+    if getattr(sys, "frozen", False):
+        return Path(sys.executable).resolve().parent / "codex-swarm-data"
+    if sys.platform == "darwin":
+        base = Path.home() / "Library/Application Support"
+    elif sys.platform == "win32":
+        base = Path(os.environ.get("LOCALAPPDATA", str(Path.home() / "AppData/Local")))
+    else:
+        base = Path(os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local/share")))
     legacy = base / "CodexNexus"
     if legacy.is_dir():
         return legacy

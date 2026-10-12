@@ -3,7 +3,7 @@
 Small, focused fixes and improvements are welcome.
 
 1. Fork and clone the repository; create a branch for your change.
-2. Run `install_requirements.bat`, then install `requirements-dev.txt` with the venv's Python.
+2. Run `install_requirements.bat` (Windows) or `sh install_requirements.sh` (Linux/macOS), then install `requirements-dev.txt` with the venv's Python.
 3. Make a focused change and add regression tests.
 4. Run `python -m pytest -q` and `python -m ruff check codex_swarm scripts tests --select F` using the venv.
 5. Open a pull request describing the behavior, tests, and any limits.

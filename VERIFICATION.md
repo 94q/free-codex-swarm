@@ -2,7 +2,8 @@
 
 ## Local release checks
 
-- **117 automated tests passed** in 31.02 seconds on Windows / Python 3.13.
+- **122 automated tests passed** in 30.04 seconds on Windows / Python 3.13 for version 0.2.0.
+- A 16.2 MiB compressed one-file Windows EXE passed `--help` and the offline TUI `--self-test` with Python/Codex removed from PATH. Portable settings, SQLite history, lock, and license notices were created beside it.
 - Ruff undefined-name/unused-import checks passed.
 - Python compilation and an installable wheel build passed.
 - Normal tests do not need a Codex login or make live provider calls. They use mocked provider behavior plus real temporary Git/process fixtures.
@@ -18,7 +19,7 @@ This is limited fixture evidence, not production certification. Independently au
 
 The upload bundle intentionally excludes private machine paths, auth caches, settings, history databases, task logs/worktrees, virtual environments, raw historical live evidence, and generated build output. The preview uses a generic identity.
 
-A Windows GitHub Actions workflow is included for Python 3.11 and 3.13. Its remote execution has not been verified because this repository has not yet been uploaded. See CONTRIBUTING.md to reproduce the normal suite.
+GitHub Actions runs the suite on Windows, Linux, and macOS / Python 3.11 and 3.13. The original Windows source workflow passed remotely. A separate tag-triggered Windows release workflow builds/tests the EXE and publishes it with a checksum. See CONTRIBUTING.md to reproduce the suite and docs/BUILDING.md for packaging.
 
 ## Fresh installation check
 

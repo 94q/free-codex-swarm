@@ -39,7 +39,7 @@ def install(root: Path) -> None:
     if not shutil.which("git"):
         print("Note: Git is not on PATH. Install Git before running tasks.")
     print(
-        "Installation complete. Run run.bat, then check Codex login and models in the app."
+        "Installation complete. Run run.bat (Windows) or sh run.sh (Linux/macOS), then check Codex login and models in the app."
     )
 
 

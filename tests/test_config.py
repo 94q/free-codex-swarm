@@ -16,6 +16,7 @@ from rich.cells import cell_len
     "mode", ["fresh", "legacy", "legacy_env", "new_env", "both_env"]
 )
 def test_renamed_state_directory(tmp_path, monkeypatch, mode):
+    monkeypatch.setattr("sys.platform", "win32")
     monkeypatch.setenv("LOCALAPPDATA", str(tmp_path))
     monkeypatch.delenv("NEXUS_HOME", raising=False)
     monkeypatch.delenv("CODEX_SWARM_HOME", raising=False)

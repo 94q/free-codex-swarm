@@ -23,7 +23,7 @@ def executable(override: str = "") -> str:
     if override:
         p = Path(override).expanduser().resolve()
         if not p.is_file() or (os.name == "nt" and p.suffix.lower() != ".exe"):
-            raise CodexError("Select the native codex.exe, not a shell script.")
+            raise CodexError("Select a native Codex executable (codex.exe on Windows), not a shell script.")
         return str(p)
     found = shutil.which("codex.exe" if os.name == "nt" else "codex")
     candidates = [Path(found)] if found else []
@@ -295,8 +295,6 @@ class CodexCLI:
             "-c",
             "features.multi_agent=false",
             "-c",
-            f'windows.sandbox="{windows_sandbox}"',
-            "-c",
             'web_search="disabled"',
             "-c",
             "sandbox_workspace_write.network_access=false",
@@ -306,6 +304,8 @@ class CodexCLI:
             str(schema_file),
             "-",
         ]
+        if os.name == "nt":
+            args[1:1] = ["-c", f'windows.sandbox="{windows_sandbox}"']
         from codex_swarm.core.coordinator import POLICY
 
         args[1:1] = ["-c", "developer_instructions=" + json.dumps(POLICY)]
