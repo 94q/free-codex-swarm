@@ -28,7 +28,7 @@ print(json.dumps({"type":"turn.completed","usage":{"input_tokens":3,"output_toke
 
     async def spawn(*args, **kwargs):
         captured.append(args)
-        if args[0] == sys.executable:
+        if Path(args[0]).resolve() == Path(sys.executable).resolve():
             agent = Path(args[args.index("--output-schema") + 1]).stem.split(".")[0]
             return await original(sys.executable, str(script), agent, **kwargs)
         return await original(*args, **kwargs)
