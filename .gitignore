@@ -1,0 +1,34 @@
+# Python/build output
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+# Local settings, history, credentials, and task data
+.env
+.env.*
+!.env.example
+.codex/
+.nexus/
+.codex-swarm/
+settings.json
+settings.before-reset-*.json
+settings.invalid.json
+reset-settings.request
+instance.lock
+*.sqlite3*
+auth.json
+tasks/
+work/
+verification/
+# OS/editor metadata
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
