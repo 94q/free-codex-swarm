@@ -1,0 +1,2 @@
+# Editable source plus pytest, pytest-asyncio, and Ruff.
+-e .[test]
