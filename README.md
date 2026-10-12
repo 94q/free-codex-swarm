@@ -13,6 +13,22 @@ isolated Git worktrees, and a review-first workflow.
 
 </div>
 
+## Put multiple ChatGPT sessions to work together
+
+**The idea: several independent ChatGPT accounts, one coordinated development swarm.**
+If a regional ChatGPT free trial or promotion is available to you, and its terms
+permit your use, eligible accounts with Codex access can be configured as separate
+worker sessions. Codex-Swarm coordinates their assignments and brings their work
+together: parallel implementation, different approaches, and a final review of
+the combined result.
+
+Authenticate each account independently using its own `codex_home`; see
+[session setup](#accounts-and-process-slots). This combines **work and perspectives**,
+not account balances or model intelligence. Each account keeps its own access and
+usage limits. Do not assume that creating extra accounts grants extra trials or
+that any particular offer is available in your region. One account with multiple
+worker slots also works.
+
 ![Codex-Swarm terminal interface](assets/terminal-preview.png)
 
 > **free-codex-swarm** is the repository name; **Codex-Swarm** is the application name.
